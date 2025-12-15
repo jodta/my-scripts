@@ -17,8 +17,8 @@ return {
         "Skibidi%.d", 
         "AURA%.d", 
         "Sigma%.d", 
-        "Mango%.d", 
-        "Phonk%.d", 
+        "RupertGaming%.d", 
+        "MIBOMBA%.d", 
         "Argument%.d",
     },
     SyntaxColors = {
@@ -60,3 +60,4 @@ return {
     }
 
 }
+
