@@ -3,11 +3,11 @@ local Configuration = {
 	UseWorkspace = false, 
 	NoActors = false,
 	FolderName = "Sigma Spy",
-	RepoUrl = [[https://raw.githubusercontent.com/newmorta/SigmaSpyRestored/refs/heads/main/Sigma-Spy]],
+	RepoUrl = [[https://github.com/jodta/my-scripts/tree/main/SigmaSpy]],
 	ParserUrl = [[http://c1.play2go.cloud:22023/raw/Roblox-parser/dist/Main.luau]],
     Directory = "Sigma Spy"
 }
-
+-- Credits to newmorta for basically having most of the files, I found missing files and fixed it but also some code was flawed so I adjusted it -- basically console errors in shit
 --// Load overwrites
 local Parameters = {...}
 local Overwrites = Parameters[1]
