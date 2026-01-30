@@ -16,6 +16,12 @@ ________  ________  ___  ___  ________  ___  ___  _________         ___    ___ _
                          __/ |                                                __/ | __/ |         __/ |
                         |___/                                                |___/ |___/         |___/ 
 
+IF YOU ARE ON THIS PAGE THIS MUST MEAN YOU WERE CAUGHT TRYING TO ENVIROMENT/DUMP THE SCRIPT
+STOP BEING A SKID AND ACTUALLY FIGURE IT OUT YOURSELF
+unless you copied the url from console output being a curious person
+
+THIS SOURCE.LUA FILE IS NOT REAL SOURCE, ITS TO PROTECT THE MAIN SCRIPT!
+
       ⠀⠀⢀⡤⠤⣄⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⣾⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⡏⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀
