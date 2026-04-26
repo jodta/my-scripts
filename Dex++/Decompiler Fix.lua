@@ -3,7 +3,9 @@
 	Version 3.0
 	
 	Developed by Chillz
-	
+	Decompiler fixed by mcdaggitt
+
+	Decompiler is up to date with roblox's latest bytecode (4/25/2026)
 	Dex++ is a revival of Moon's Dex, made to fulfill Moon's Dex prophecy.
 ]]
 
