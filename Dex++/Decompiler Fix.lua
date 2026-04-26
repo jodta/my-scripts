@@ -3,9 +3,7 @@
 	Version 3.0
 	
 	Developed by Chillz
-	Decompiler fixed by mcdaggitt
-
-	Decompiler is up to date with roblox's latest bytecode (4/25/2026)
+	
 	Dex++ is a revival of Moon's Dex, made to fulfill Moon's Dex prophecy.
 ]]
 
@@ -14690,13 +14688,11 @@ Main = (function()
 
 		-- Hook it directly into Dex
 		env.decompile = function(...)
-			if typeof(decompile) == "function" and Settings.Decompiler.PreferDecompilerFallback == false then
-				return decompile(...)
-			elseif typeof(getscriptbytecode) == "function" then
-				-- We bypass Dex's UI settings here and force the lua.expert API
+			if typeof(getscriptbytecode) == "function" then
+				-- Forced to only use lua.expert API
 				return LuaExpertDec(...)
 			else
-			    return "-- Neither a built-in decompiler nor getscriptbytecode are supported by your executor."
+			    return "-- getscriptbytecode is not supported by your executor. Cannot decompile."
 			end
 		end
 		
