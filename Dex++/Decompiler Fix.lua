@@ -3,7 +3,7 @@
 	Version 3.1
 	
 	Developed by Chillz
-	Decompiler fixed + saveinstance fix by mcdaggitt,
+	Decompiler fixed + rspy plugin + adonis bypass by mcdaggitt,
 	Dex++ is a revival of Moon's Dex, made to fulfill Moon's Dex prophecy.
 ]]
 
