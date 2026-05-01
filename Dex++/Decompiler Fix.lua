@@ -889,61 +889,6 @@ end,
 	The main explorer interface
 ]]
 
-
-
--- Adonis related 
-local function InitAdonisBypass()
-	local Adonis = { Name = "Adonis", Game = "*" }
-	local AdonisAnticheatThreads = {}
-	
-	if not getreg or not getgc or not isfunctionhooked then
-		warn("Executor does not support Adonis bypass functions.")
-		return false
-	end
-
-	for _, thread in getreg() do
-		if typeof(thread) ~= "thread" then continue end
-		local Source = debug.info(thread, 1, "s")
-		if Source and (Source:match(".Core.Anti") or Source:match(".Plugins.Anti_Cheat")) then
-			table.insert(AdonisAnticheatThreads, thread)
-		end
-	end
-
-	for _, thread in AdonisAnticheatThreads do
-		pcall(coroutine.close, thread)
-	end
-
-	local AdonisTables = {}
-	if filtergc then
-		local ContendorAdonisTables = filtergc("table", { Keys = { "Detected", "RLocked" } }, false)
-		for _, AdonisTable in ContendorAdonisTables do
-			if typeof(rawget(AdonisTable, "Detected")) == "function" then
-				table.insert(AdonisTables, AdonisTable)
-			end
-		end
-	else
-		for _, Table in getgc(true) do
-			if typeof(Table) == "table" and typeof(rawget(Table, "Detected")) == "function" and rawget(Table, "RLocked") then
-				table.insert(AdonisTables, Table)
-			end
-		end
-	end
-
-	for _, AdonisTable in AdonisTables do
-		for _, DetectionFunc in AdonisTable do
-			if typeof(DetectionFunc) == "function" and not isfunctionhooked(DetectionFunc) then
-				hookfunction(DetectionFunc, function()
-					coroutine.yield()
-					return task.wait(9e9)
-				end)
-			end
-		end
-	end
-	return true
-end
-
-InitAdonisBypass()
-
 -- Common Locals
 local Main,Lib,Apps,Settings -- Main Containers
 local Explorer, Properties, ScriptViewer, ModelViewer, Notebook -- Major Apps
@@ -16331,3 +16276,56 @@ if not isfolder("dex")         then makefolder("dex")         end
 if not isfolder("dex/plugins") then makefolder("dex/plugins") end
  
 writefile("dex/plugins/RemoteSpy.lua", plugin_src)
+
+-- Adonis related 
+local function InitAdonisBypass()
+	local Adonis = { Name = "Adonis", Game = "*" }
+	local AdonisAnticheatThreads = {}
+	
+	if not getreg or not getgc or not isfunctionhooked then
+		warn("Executor does not support Adonis bypass functions.")
+		return false
+	end
+
+	for _, thread in getreg() do
+		if typeof(thread) ~= "thread" then continue end
+		local Source = debug.info(thread, 1, "s")
+		if Source and (Source:match(".Core.Anti") or Source:match(".Plugins.Anti_Cheat")) then
+			table.insert(AdonisAnticheatThreads, thread)
+		end
+	end
+
+	for _, thread in AdonisAnticheatThreads do
+		pcall(coroutine.close, thread)
+	end
+
+	local AdonisTables = {}
+	if filtergc then
+		local ContendorAdonisTables = filtergc("table", { Keys = { "Detected", "RLocked" } }, false)
+		for _, AdonisTable in ContendorAdonisTables do
+			if typeof(rawget(AdonisTable, "Detected")) == "function" then
+				table.insert(AdonisTables, AdonisTable)
+			end
+		end
+	else
+		for _, Table in getgc(true) do
+			if typeof(Table) == "table" and typeof(rawget(Table, "Detected")) == "function" and rawget(Table, "RLocked") then
+				table.insert(AdonisTables, Table)
+			end
+		end
+	end
+
+	for _, AdonisTable in AdonisTables do
+		for _, DetectionFunc in AdonisTable do
+			if typeof(DetectionFunc) == "function" and not isfunctionhooked(DetectionFunc) then
+				hookfunction(DetectionFunc, function()
+					coroutine.yield()
+					return task.wait(9e9)
+				end)
+			end
+		end
+	end
+	return true
+end
+
+InitAdonisBypass()
