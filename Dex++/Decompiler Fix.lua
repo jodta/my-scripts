@@ -1,9 +1,9 @@
 --[[
 	Dex++
-	Version 3.0
+	Version 3.1
 	
 	Developed by Chillz
-	
+	Decompiler fixed + saveinstance fix by mcdaggitt,
 	Dex++ is a revival of Moon's Dex, made to fulfill Moon's Dex prophecy.
 ]]
 
@@ -48,6 +48,45 @@ end
 
 local EmbeddedModules = {
 ["Console"] = function()
+
+--[[
+    Regional AssetID Bypasser
+]]
+
+local cacheFolder = "DexPlusPlus_Assets"
+if not isfolder(cacheFolder) then 
+    makefolder(cacheFolder) 
+end
+
+local proxy = "https://roproxy.com/asset/?id=%s" 
+
+local function applySafeAsset(uiElement, assetString)
+    local assetId = string.match(assetString, "%d+")
+    
+    if not assetId then
+        uiElement.Image = assetString
+        return
+    end
+    
+    local filePath = cacheFolder .. "/icon_" .. assetId .. ".png"
+    
+    if isfile(filePath) then
+        uiElement.Image = getcustomasset(filePath)
+        return
+    end
+    uiElement.Image = assetString
+    task.spawn(function()
+        local fetchUrl = string.format(proxy, assetId)
+        local success, imageData = pcall(function()
+            return game:HttpGet(fetchUrl)
+        end)
+            if success and imageData and #imageData > 0 then
+            writefile(filePath, imageData)
+            uiElement.Image = getcustomasset(filePath)
+        end
+    end)
+end
+
 --[[
 	Console Module
 ]]
@@ -14266,7 +14305,7 @@ Main = (function()
 	Main.Elevated = false
 	Main.AllowDraggableOnMobile = true
 	Main.MissingEnv = {}
-	Main.Version = "3.0"
+	Main.Version = "3.1"
 	Main.Mouse = plr:GetMouse()
 	Main.AppControls = {}
 	Main.Apps = Apps
@@ -14564,25 +14603,25 @@ Main = (function()
 		env.makefolder = makefolder
 		env.listfiles = listfiles
 		env.loadfile = loadfile
-		env.saveinstance = saveinstance or (function()
-			--warn("No built-in saveinstance exists, using SynSaveInstance and wrapper...")
-			if game:GetService("RunService"):IsStudio() then return function() error("Cannot run in Roblox Studio!") end end
-			local Params = {
-				RepoURL = "https://raw.githubusercontent.com/luau/SynSaveInstance/main/",
-				SSI = "saveinstance",
-			}
-			local synsaveinstance = loadstring(oldgame:HttpGet(Params.RepoURL .. Params.SSI .. ".luau", true), Params.SSI)()
-		
-			local function wrappedsaveinstance(obj, filepath, options)
-				options["FilePath"] = filepath
-				--options["ReadMe"] = false
-				options["Object"] = obj
-				return synsaveinstance(options)
-			end
-			
-			getgenv().saveinstance = wrappedsaveinstance
-			return wrappedsaveinstance
-		end)()
+		env.saveinstance = (function()
+	if game:GetService("RunService"):IsStudio() then
+		return function() error("Cannot run in Roblox Studio!") end
+	end
+	
+	local Params = {
+		RepoURL = "https://raw.githubusercontent.com/luau/SynSaveInstance/main/",
+		SSI = "saveinstance",
+	}
+	local synsaveinstance = loadstring(oldgame:HttpGet(Params.RepoURL .. Params.SSI .. ".luau", true), Params.SSI)()
+	
+	    local function wrappedsaveinstance(obj, filepath, options)
+		            options["FilePath"] = filepath
+		            options["Object"] = obj
+		            return synsaveinstance(options)
+	            end
+	        getgenv().saveinstance = wrappedsaveinstance
+	        return wrappedsaveinstance
+        end)()
 		
 		env.parsefile = function(name)
 			return tostring(name):gsub("[*\\?:<>|]+", ""):sub(1, 175)
@@ -14696,9 +14735,9 @@ Main = (function()
 			end
 		end
 		
-		--[[if Main.Elevated then
+		if Main.Elevated then
 			getgenv().decompile = env.decompile
-		end]]
+		end
 		
 
 		if identifyexecutor then
