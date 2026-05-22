@@ -1,4 +1,3 @@
--- fix
 local UIS = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
@@ -6,9 +5,9 @@ local CoreGui = game:GetService("CoreGui")
 local Camera = workspace.CurrentCamera
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
- 
-local Library = { Toggled = true, Accent = Color3.fromRGB(160, 60, 255), _blockDrag = false, ForceMobile = true }
- 
+
+local Library = { Toggled = true, Accent = Color3.fromRGB(160, 60, 255), _blockDrag = false }
+
 local Icons = {
     home          = { 16898613509, 48, 48, 820, 147 },
     flame         = { 16898613353, 48, 48, 967, 306 },
@@ -28,18 +27,18 @@ local Icons = {
     save          = { 16898613699, 48, 48, 918, 453 },
     sliders       = { 16898613777, 48, 48, 404, 771 },
 }
- 
+
 local function Create(class, props)
     local obj = Instance.new(class)
     for i, v in next, props do if i ~= "Parent" then obj[i] = v end end
     obj.Parent = props.Parent
     return obj
 end
- 
+
 local function Tween(obj, time, props)
     TweenService:Create(obj, TweenInfo.new(time, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), props):Play()
 end
- 
+
 function Library:MakeDraggable(gui)
     local drag, dStart, sPos
     gui.InputBegan:Connect(function(i)
@@ -55,15 +54,15 @@ function Library:MakeDraggable(gui)
         end
     end)
 end
- 
+
 function Library:GetIcon(name)
     return Icons[name] or Icons["home"]
 end
- 
+
 function Library:CreateWindow(title)
-    
-    local isMobile = Library.ForceMobile or (UIS.TouchEnabled and not UIS.KeyboardEnabled)
- 
+    -- FIX: Detect mobile FIRST before any layout decisions
+    local isMobile = UIS.TouchEnabled and not UIS.KeyboardEnabled
+
     local guiParent = pcall(function() return CoreGui.Name end) and CoreGui or LocalPlayer.PlayerGui
     local ScreenGui = Create("ScreenGui", {
         Name = "KurbyLib",
@@ -76,7 +75,7 @@ function Library:CreateWindow(title)
         if getgenv()._KurbyUI then getgenv()._KurbyUI:Destroy() end
         getgenv()._KurbyUI = ScreenGui
     end
- 
+
     local Main = Create("Frame", {
         Parent = ScreenGui,
         BackgroundColor3 = Color3.fromRGB(8, 8, 8),
@@ -85,7 +84,7 @@ function Library:CreateWindow(title)
         Size = UDim2.new(0, 600, 0, 440)
     })
     local Scale = Create("UIScale", { Parent = Main })
- 
+
     local function updateScale()
         local Cam = workspace.CurrentCamera
         if not Cam then return end
@@ -100,17 +99,17 @@ function Library:CreateWindow(title)
     end
     updateScale()
     Camera:GetPropertyChangedSignal("ViewportSize"):Connect(updateScale)
- 
+
     Create("UICorner", { CornerRadius = UDim.new(0, 10), Parent = Main })
     Create("UIStroke", { Color = Color3.fromRGB(45, 45, 45), Parent = Main })
- 
+
     local Sidebar = Create("Frame", {
         Parent = Main,
         BackgroundColor3 = Color3.fromRGB(13, 13, 13),
         Size = UDim2.new(0, 65, 1, 0)
     })
     Create("UIStroke", { Color = Color3.fromRGB(35, 35, 35), ApplyStrokeMode = "Border", Parent = Sidebar })
- 
+
     Create("TextLabel", {
         Parent = Sidebar,
         BackgroundTransparency = 1,
@@ -120,7 +119,7 @@ function Library:CreateWindow(title)
         TextColor3 = Library.Accent,
         TextSize = 22
     })
- 
+
     local List = Create("Frame", {
         Parent = Sidebar,
         BackgroundTransparency = 1,
@@ -132,16 +131,16 @@ function Library:CreateWindow(title)
         HorizontalAlignment = "Center",
         Padding = UDim.new(0, 4)
     })
- 
+
     local Container = Create("Frame", {
         Parent = Main,
         BackgroundTransparency = 1,
         Position = UDim2.new(0, 65, 0, 0),
         Size = UDim2.new(1, -65, 1, 0)
     })
- 
+
     local Header = Create("Frame", { Parent = Container, BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 48) })
- 
+
     -- FIX: Shrink title label on mobile so it doesn't eat into subtab space
     Create("TextLabel", {
         Parent = Header,
@@ -155,7 +154,7 @@ function Library:CreateWindow(title)
         TextXAlignment = "Left",
         TextTruncate = "AtEnd",
     })
- 
+
     -- FIX: Use a ScrollingFrame for SubTabBar so tabs don't get clipped on mobile.
     -- Horizontal scroll (invisible scrollbar) lets all tabs remain accessible.
     local subTabOffset = isMobile and 116 or 200
@@ -173,12 +172,12 @@ function Library:CreateWindow(title)
     })
     Create("UIListLayout", { Parent = SubTabBar, FillDirection = "Horizontal", Padding = UDim.new(0, isMobile and 10 or 16), VerticalAlignment = "Center" })
     Create("Frame", { Parent = Header, BackgroundColor3 = Color3.fromRGB(30, 30, 30), BorderSizePixel = 0, Position = UDim2.new(0, 0, 1, -1), Size = UDim2.new(1, 0, 0, 1) })
- 
+
     local Folder = Create("Frame", { Parent = Container, BackgroundTransparency = 1, Position = UDim2.new(0, 0, 0, 48), Size = UDim2.new(1, 0, 1, -48) })
     Library:MakeDraggable(Main)
- 
+
     local toggled = true
- 
+
     local function toggleUI()
         toggled = not toggled
         Main.Visible = toggled
@@ -188,13 +187,13 @@ function Library:CreateWindow(title)
             })
         end
     end
- 
+
     UIS.InputBegan:Connect(function(input)
         if input.KeyCode == Enum.KeyCode.RightShift then
             toggleUI()
         end
     end)
- 
+
     -- ── Mobile toggle button (touch devices only) ────────────────────────────
     local MobileBtn
     if isMobile then
@@ -214,7 +213,7 @@ function Library:CreateWindow(title)
             Active               = true
         })
         Create("UICorner", { CornerRadius = UDim.new(0, 10), Parent = MobileBtn })
- 
+
         MobileBtn.Activated:Connect(function()
             Tween(MobileBtn, 0.08, { Size = UDim2.new(0, 48, 0, 48) })
             task.delay(0.09, function()
@@ -223,11 +222,11 @@ function Library:CreateWindow(title)
             toggleUI()
         end)
     end
- 
+
     local Window = { Current = nil }
- 
+
     function Window:CreateTab(name, iconName)
- 
+
         local Btn = Create("ImageButton", {
             Name = name .. "Tab",
             Parent = List,
@@ -235,7 +234,7 @@ function Library:CreateWindow(title)
             Size = UDim2.new(1, 0, 0, 50),
             Active = true
         })
- 
+
         local Highlight = Create("Frame", {
             Parent = Btn,
             BackgroundColor3 = Color3.fromRGB(30, 30, 30),
@@ -244,7 +243,7 @@ function Library:CreateWindow(title)
             Size = UDim2.new(1, 0, 1, 0)
         })
         Create("UICorner", { CornerRadius = UDim.new(0, 6), Parent = Highlight })
- 
+
         local Ind = Create("Frame", {
             Name = "Indicator",
             Parent = Btn,
@@ -256,7 +255,7 @@ function Library:CreateWindow(title)
             ZIndex = 5
         })
         Create("UICorner", { CornerRadius = UDim.new(1, 0), Parent = Ind })
- 
+
         local iconData = Library:GetIcon(iconName or "home")
         local Ico = Create("ImageLabel", {
             Name = "Icon",
@@ -271,9 +270,9 @@ function Library:CreateWindow(title)
             ScaleType = Enum.ScaleType.Fit,
             ZIndex = 6
         })
- 
+
         local Tab = { SubTabs = {}, CurrentST = nil }
- 
+
         function Tab:Select()
             for _, v in next, List:GetChildren() do
                 if v:IsA("ImageButton") then
@@ -297,14 +296,14 @@ function Library:CreateWindow(title)
             for _, st in next, Tab.SubTabs do st.Btn.Visible = true end
             if Tab.CurrentST then Tab.CurrentST:Select() elseif Tab.SubTabs[1] then Tab.SubTabs[1]:Select() end
         end
- 
+
         Btn.Activated:Connect(function() Tab:Select() end)
         Btn.MouseEnter:Connect(function() if not Window.Current or Window.Current.Tab ~= Tab then Tween(Highlight, 0.2, { BackgroundTransparency = 0.92 }) end end)
         Btn.MouseLeave:Connect(function() if not Window.Current or Window.Current.Tab ~= Tab then Tween(Highlight, 0.2, { BackgroundTransparency = 1 }) end end)
- 
+
         function Tab:CreateSubTab(stName, stIconName)
             local stIconData = Library:GetIcon(stIconName or "layout")
- 
+
             -- FIX: Use AutomaticSize properly; frame is sized by its children
             local SBtn = Create("Frame", {
                 Parent = SubTabBar,
@@ -366,11 +365,11 @@ function Library:CreateWindow(title)
                 CanvasSize = UDim2.new(0, 0, 0, 0),
                 ScrollingDirection = "Y"
             })
-            Create("UIListLayout", { Parent = SPage, Padding = UDim.new(0, 14), HorizontalAlignment = "Center", Name = "Layout" })
-            Create("UIPadding", { Parent = SPage, PaddingTop = UDim.new(0, 14), PaddingLeft = UDim.new(0, 18), PaddingRight = UDim.new(0, 18), PaddingBottom = UDim.new(0, 24) })
- 
+            Create("UIListLayout", { Parent = SPage, Padding = UDim.new(0, 10), HorizontalAlignment = "Center", Name = "Layout" })
+            Create("UIPadding", { Parent = SPage, PaddingTop = UDim.new(0, 14), PaddingLeft = UDim.new(0, 18), PaddingRight = UDim.new(0, 18) })
+
             local SubTab = { Page = SPage, Btn = SBtn }
- 
+
             function SubTab:Select()
                 if Tab.CurrentST then
                     Tab.CurrentST.Page.Visible = false
@@ -387,21 +386,19 @@ function Library:CreateWindow(title)
             end
             SClick.Activated:Connect(function() SubTab:Select() end)
             table.insert(Tab.SubTabs, SubTab)
- 
+
             function SubTab:CreateSection(secName)
                 local Sec = Create("Frame", { Parent = SPage, BackgroundColor3 = Color3.fromRGB(16, 16, 16), Size = UDim2.new(1, 0, 0, 30) })
                 Create("UICorner", { CornerRadius = UDim.new(0, 6), Parent = Sec })
                 Create("Frame", { Parent = Sec, BackgroundColor3 = Library.Accent, BorderSizePixel = 0, Position = UDim2.new(0, 0, 0, 6), Size = UDim2.new(0, 2, 0, 18) })
                 Create("TextLabel", { Parent = Sec, BackgroundTransparency = 1, Position = UDim2.new(0, 10, 0, 0), Size = UDim2.new(1, -10, 1, 0), Font = "GothamBold", Text = secName:upper(), TextColor3 = Color3.fromRGB(190, 190, 190), TextSize = 11, TextXAlignment = "Left" })
                 local Content = Create("Frame", { Parent = SPage, BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 0) })
-                Create("UIPadding", { Parent = Content, PaddingTop = UDim.new(0, 4) })
-
-                local L = Create("UIListLayout", { Parent = Content, Padding = UDim.new(0, 10) })
+                local L = Create("UIListLayout", { Parent = Content, Padding = UDim.new(0, 6) })
                 L:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
                     Content.Size = UDim2.new(1, 0, 0, L.AbsoluteContentSize.Y)
                 end)
                 local S = {}
- 
+
                 function S:CreateToggle(n, def, cb)
                     local F = Create("TextButton", { Parent = Content, BackgroundColor3 = Color3.fromRGB(13, 13, 13), Size = UDim2.new(1, 0, 0, 42), Text = "", AutoButtonColor = false, Active = true })
                     Create("UICorner", { CornerRadius = UDim.new(0, 6), Parent = F })
@@ -416,7 +413,7 @@ function Library:CreateWindow(title)
                     u()
                     return { Set = function(_, v) t = v; u() end }
                 end
- 
+
                 function S:CreateButton(n, cb)
                     local B = Create("TextButton", { Parent = Content, BackgroundColor3 = Color3.fromRGB(13, 13, 13), Size = UDim2.new(1, 0, 0, 42), Text = "", AutoButtonColor = false, Active = true })
                     Create("UICorner", { CornerRadius = UDim.new(0, 6), Parent = B })
@@ -425,7 +422,7 @@ function Library:CreateWindow(title)
                     B.MouseLeave:Connect(function() Tween(B, 0.15, { BackgroundColor3 = Color3.fromRGB(13, 13, 13) }) end)
                     B.Activated:Connect(function() if cb then cb() end end)
                 end
- 
+
                 function S:CreateSlider(n, min, max, def, cb)
                     min = min or 0; max = max or 100; def = def or min; cb = cb or function() end
                     local F = Create("Frame", { Parent = Content, BackgroundColor3 = Color3.fromRGB(13, 13, 13), Size = UDim2.new(1, 0, 0, 50) })
@@ -451,7 +448,7 @@ function Library:CreateWindow(title)
                     UIS.InputChanged:Connect(function(i) if dragging and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then move(i) end end)
                     return { Set = function(_, v) local p = (v - min)/(max - min); Fill.Size = UDim2.new(p, 0, 1, 0); Val.Text = tostring(v); cb(v) end }
                 end
- 
+
                 function S:CreateDropdown(n, items, def, cb)
                     items = items or {}; cb = cb or function() end
                     local F = Create("TextButton", { Parent = Content, BackgroundColor3 = Color3.fromRGB(13, 13, 13), Size = UDim2.new(1, 0, 0, 42), ClipsDescendants = true, Text = "", AutoButtonColor = false, Active = true })
@@ -486,7 +483,7 @@ function Library:CreateWindow(title)
                     end)
                     return { Refresh = function(_, list) refresh(list) end }
                 end
- 
+
                 function S:CreateTextBox(n, placeholder, cb)
                     cb = cb or function() end
                     local F = Create("Frame", { Parent = Content, BackgroundColor3 = Color3.fromRGB(13, 13, 13), Size = UDim2.new(1, 0, 0, 42) })
@@ -512,14 +509,14 @@ function Library:CreateWindow(title)
                     Box.FocusLost:Connect(function(enter) Tween(Box, 0.15, { BackgroundColor3 = Color3.fromRGB(22, 22, 22) }); if enter then cb(Box.Text) end end)
                     return { Set = function(_, v) Box.Text = v end, Get = function() return Box.Text end }
                 end
- 
+
                 function S:CreateLabel(n)
                     local F = Create("Frame", { Parent = Content, BackgroundColor3 = Color3.fromRGB(13, 13, 13), Size = UDim2.new(1, 0, 0, 32) })
                     Create("UICorner", { CornerRadius = UDim.new(0, 6), Parent = F })
                     local Lbl = Create("TextLabel", { Parent = F, BackgroundTransparency = 1, Position = UDim2.new(0, 12, 0, 0), Size = UDim2.new(1, -24, 1, 0), Font = "Gotham", Text = n, TextColor3 = Color3.fromRGB(180, 180, 180), TextSize = 13, TextXAlignment = "Left" })
                     return { Set = function(_, v) Lbl.Text = v end }
                 end
- 
+
                 function S:CreateKeybind(n, defKey, cb)
                     cb = cb or function() end
                     local F = Create("Frame", { Parent = Content, BackgroundColor3 = Color3.fromRGB(13, 13, 13), Size = UDim2.new(1, 0, 0, 42) })
@@ -557,7 +554,7 @@ function Library:CreateWindow(title)
                         end
                     end)
                 end
- 
+
                 return S
             end
             return SubTab
@@ -567,6 +564,6 @@ function Library:CreateWindow(title)
     end
     return Window
 end
- 
- 
+
+
 return Library
