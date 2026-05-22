@@ -366,7 +366,7 @@ function Library:CreateWindow(title)
                 CanvasSize = UDim2.new(0, 0, 0, 0),
                 ScrollingDirection = "Y"
             })
-            Create("UIListLayout", { Parent = SPage, Padding = UDim.new(0, 10), HorizontalAlignment = "Center", Name = "Layout" })
+            Create("UIListLayout", { Parent = SPage, Padding = UDim.new(0, 14), HorizontalAlignment = "Center", Name = "Layout" })
             Create("UIPadding", { Parent = SPage, PaddingTop = UDim.new(0, 14), PaddingLeft = UDim.new(0, 18), PaddingRight = UDim.new(0, 18), PaddingBottom = UDim.new(0, 24) })
  
             local SubTab = { Page = SPage, Btn = SBtn }
@@ -390,11 +390,12 @@ function Library:CreateWindow(title)
  
             function SubTab:CreateSection(secName)
                 local Sec = Create("Frame", { Parent = SPage, BackgroundColor3 = Color3.fromRGB(16, 16, 16), Size = UDim2.new(1, 0, 0, 30) })
-                Create("UIPadding", { Parent = Sec, PaddingBottom = UDim.new(0, 8) })
                 Create("UICorner", { CornerRadius = UDim.new(0, 6), Parent = Sec })
                 Create("Frame", { Parent = Sec, BackgroundColor3 = Library.Accent, BorderSizePixel = 0, Position = UDim2.new(0, 0, 0, 6), Size = UDim2.new(0, 2, 0, 18) })
                 Create("TextLabel", { Parent = Sec, BackgroundTransparency = 1, Position = UDim2.new(0, 10, 0, 0), Size = UDim2.new(1, -10, 1, 0), Font = "GothamBold", Text = secName:upper(), TextColor3 = Color3.fromRGB(190, 190, 190), TextSize = 11, TextXAlignment = "Left" })
                 local Content = Create("Frame", { Parent = SPage, BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 0) })
+                Create("UIPadding", { Parent = Content, PaddingTop = UDim.new(0, 4) })
+
                 local L = Create("UIListLayout", { Parent = Content, Padding = UDim.new(0, 10) })
                 L:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
                     Content.Size = UDim2.new(1, 0, 0, L.AbsoluteContentSize.Y)
