@@ -1,4 +1,4 @@
--- fix hope
+-- fix
 local UIS = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
@@ -390,6 +390,7 @@ function Library:CreateWindow(title)
  
             function SubTab:CreateSection(secName)
                 local Sec = Create("Frame", { Parent = SPage, BackgroundColor3 = Color3.fromRGB(16, 16, 16), Size = UDim2.new(1, 0, 0, 30) })
+                Create("UIPadding", { Parent = Sec, PaddingBottom = UDim.new(0, 8) })
                 Create("UICorner", { CornerRadius = UDim.new(0, 6), Parent = Sec })
                 Create("Frame", { Parent = Sec, BackgroundColor3 = Library.Accent, BorderSizePixel = 0, Position = UDim2.new(0, 0, 0, 6), Size = UDim2.new(0, 2, 0, 18) })
                 Create("TextLabel", { Parent = Sec, BackgroundTransparency = 1, Position = UDim2.new(0, 10, 0, 0), Size = UDim2.new(1, -10, 1, 0), Font = "GothamBold", Text = secName:upper(), TextColor3 = Color3.fromRGB(190, 190, 190), TextSize = 11, TextXAlignment = "Left" })
