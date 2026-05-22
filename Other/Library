@@ -1,3 +1,4 @@
+-- fix
 local UIS = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
@@ -366,7 +367,7 @@ function Library:CreateWindow(title)
                 ScrollingDirection = "Y"
             })
             Create("UIListLayout", { Parent = SPage, Padding = UDim.new(0, 10), HorizontalAlignment = "Center", Name = "Layout" })
-            Create("UIPadding", { Parent = SPage, PaddingTop = UDim.new(0, 14), PaddingLeft = UDim.new(0, 18), PaddingRight = UDim.new(0, 18) })
+            Create("UIPadding", { Parent = SPage, PaddingTop = UDim.new(0, 14), PaddingLeft = UDim.new(0, 18), PaddingRight = UDim.new(0, 18), PaddingBottom = UDim.new(0, 24) })
  
             local SubTab = { Page = SPage, Btn = SBtn }
  
