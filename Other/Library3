@@ -66,7 +66,7 @@ gethui = gethui or function() return CoreGui end
 
 --#region Variables 
 local LocalPlayer = Players.LocalPlayer
-local IsMobile = UserInputService.TouchEnabled or true
+local IsMobile = UserInputService.TouchEnabled or false
 local GuiInset = GuiService:GetGuiInset().Y
 local Mouse = cloneref(LocalPlayer:GetMouse())
 --#endregion
