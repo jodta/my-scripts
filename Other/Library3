@@ -2506,7 +2506,7 @@ local Library = {
         Library:Create("UIScale", {
             Name = "\0",
             Parent = Items["MainFrame"].Instance,
-            Scale = 0.5
+            Scale = 0.7
         })
     end
                 
