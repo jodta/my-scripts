@@ -14614,7 +14614,7 @@ Main = (function()
 		RepoURL = "https://raw.githubusercontent.com/luau/SynSaveInstance/main/",
 		SSI = "saveinstance",
 	}
-	local synsaveinstance = loadstring(oldgame:HttpGet(Params.RepoURL .. Params.SSI .. ".luau", true), Params.SSI)()
+	
 	
 	    local function wrappedsaveinstance(obj, filepath, options)
 		            options["FilePath"] = filepath
